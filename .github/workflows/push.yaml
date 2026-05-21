@@ -7,11 +7,13 @@ on:
     paths:
     - '**.go'
     - 'go.mod'
+    - '.github/workflows/push.yaml'
   pull_request:
     branches: [master]
     paths:
     - '**.go'
     - 'go.mod'
+    - '.github/workflows/push.yaml'
 
 jobs:
   go-build:
@@ -26,7 +28,7 @@ jobs:
       run: make build
     - name: bootstrap vault server
       run: make bootstrap
-    - name: unit test
-      run: make unit
     - name: acceptance test
       run: make accept
+    - name: unit test
+      run: make unit
