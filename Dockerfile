@@ -23,7 +23,7 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
 
 FROM alpine:3.22
 
-RUN apk add --no-cache ca-certificates findutils tzdata \
+RUN apk add --no-cache ca-certificates curl findutils tzdata \
     && addgroup -g 1000 vaultbackup \
     && adduser -D -H -u 1000 -G vaultbackup vaultbackup
 
