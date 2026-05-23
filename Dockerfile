@@ -21,11 +21,14 @@ RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} \
 	&& mkdir -p /tmp-root/tmp \
 	&& chmod 1777 /tmp-root/tmp
 
-FROM gcr.io/distroless/static-debian12:nonroot
+FROM alpine:3.22
 
-COPY --from=build --chown=nonroot:nonroot --chmod=0555 /out/vault-raft-backup /vault-raft-backup
-COPY --from=build --chown=nonroot:nonroot --chmod=1777 /tmp-root/tmp /tmp
+RUN apk add --no-cache ca-certificates findutils tzdata \
+    && addgroup -g 1000 vaultbackup \
+    && adduser -D -H -u 1000 -G vaultbackup vaultbackup
 
-USER nonroot:nonroot
+COPY --from=build --chown=vaultbackup:vaultbackup --chmod=0555 /out/vault-raft-backup /usr/local/bin/vault-raft-backup
+
+USER 1000:1000
 WORKDIR /
-ENTRYPOINT ["/vault-raft-backup"]
+ENTRYPOINT ["/usr/local/bin/vault-raft-backup"]
